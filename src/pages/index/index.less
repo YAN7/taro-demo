@@ -1,0 +1,54 @@
+.index {
+	margin-top: 40px;
+	text-align: center;
+}
+
+.rewordText {
+	display: block;
+	margin-top: 20px;
+}
+
+.clockBtn {
+	margin-top: 40px;
+}
+
+.greenStatus {
+	width: 200px;
+	height: 200px;
+	margin: 150px auto;
+	background-color: #6cb552;
+	border-radius: 50%;
+	position: relative;
+	color: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.greenStatus::before {
+	content: "";
+	width: 250px;
+	height: 250px;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-left: -125px;
+	margin-top: -125px;
+	border-radius: 50%;
+	animation: GreenDot 1.5s ease-out 0s infinite;
+	background-color: rgba(108, 181, 82, 0.5);
+}
+
+@keyframes GreenDot {
+	0% {
+			transform: scale(0.5);
+			opacity: 1;
+	}
+	30% {
+			opacity: 1;
+	}
+	100% {
+			transform: scale(1.4);
+			opacity: 0;
+	}
+}
