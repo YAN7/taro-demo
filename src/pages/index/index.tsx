@@ -24,7 +24,8 @@ interface Index {
 @observer
 class Index extends Component {
 	state = {
-		rewordText: ''
+		// rewordText: ''
+		id: '',
 	}
 
 	componentDidMount() {
@@ -42,7 +43,7 @@ class Index extends Component {
 	}
 
 	renderReword = () => {
-		let text = ` \n `
+		let rewordText = ` \n `
 		setInterval(() => {
 			const currTime = new Date()
 			const currYear = currTime.getFullYear()
@@ -55,12 +56,13 @@ class Index extends Component {
 			const second = Math.floor((difference / 1000) % 60)
 			const rewardPerSecond = 500 / 8 / 3600
 			const rewardTotal = (rewardPerSecond * difference / 1000).toFixed(2)
-			text = `你已加班:${hour}小时${minute}分${second}秒, \n 已赚取${rewardTotal}元报酬`
+			rewordText = `你已加班:${hour}小时${minute}分${second}秒, \n 已赚取${rewardTotal}元报酬`
 			this.setState({
-				rewordText: text
+				// eslint-disable-next-line react/no-unused-state
+				rewordText,
 			})
 		}, 1000)
-		return text
+		return rewordText
 	};
 
 	login = async () => {
@@ -71,9 +73,34 @@ class Index extends Component {
 			data: {
 				code,
 			},
-			success: function (res) {
-				console.log(res)
-				Taro.getUserInfo()
+			success: (res: any) => {
+				console.log('res', res)
+				this.setState({
+					id: res.data.id,
+				})
+				if (!res.data.id) {
+					Taro.showModal({
+						title: '提示',
+						content: '尚未授权,请进行授权,请点击登录按钮授权',
+					})
+				}
+			}
+		})
+	}
+
+
+	getUserInfo = (e: any) => {
+		// console.log('e', e)
+		Taro.request({
+			url: 'http://localhost:3000/user',
+			method: 'POST',
+			data: {
+				id: this.state.id,
+				...e.detail.userInfo,
+			},
+			success: (res) => {
+				// if (res.code)
+				console.log('res')
 			}
 		})
 	}
@@ -83,7 +110,8 @@ class Index extends Component {
       <View className='index'>
 				{/* <Text className="rewordText">{this.state.rewordText}</Text> */}
         {/* <View className="greenStatus" onClick={this.clockIn}>立即打卡</View> */}
-				<Button openType="getAuthorize" onClick={this.login}>登陆</Button>
+				<Button openType='getUserInfo' onGetUserInfo={this.getUserInfo}>登陆</Button>
+				<Button onClick={this.login}>检测登录状态</Button>
       </View>
     )
   }
